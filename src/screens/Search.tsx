@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useCallback, useState } from "react"
 import { getMovieFromApi } from "../api/api"
 import {
   View,
@@ -19,16 +19,15 @@ export default function Search() {
    * @param {string} text
    * @returns
    */
-  const handleTextChange = (text: string) =>
-    setSearchText(text)
+  const handleTextChange = useCallback(
+    (text: string) => setSearchText(text),
+    []
+  )
 
-  const searchMovie = async () => {
+  const searchMovie = useCallback(async () => {
     const results = await getMovieFromApi(searchText)
     setMovies(results)
-  }
-
-  const deleteMovie = (id: number) =>
-    setMovies(movies.filter((item) => item.id !== id))
+  }, [searchText])
 
   return (
     <View>
@@ -37,6 +36,7 @@ export default function Search() {
           placeholder="Enter movie name"
           style={styles.input}
           value={searchText}
+          onSubmitEditing={searchMovie}
           onChangeText={handleTextChange}
         />
         <Button
@@ -49,10 +49,7 @@ export default function Search() {
         keyExtractor={(item) => item.id.toString()}
         data={movies}
         renderItem={({ item }) => (
-          <MovieCard
-            movie={item}
-            deleteMovie={deleteMovie}
-          />
+          <MovieCard movie={item} />
         )}
       />
     </View>
@@ -63,7 +60,7 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 2,
     borderRadius: 50,
-    padding: 25,
+    padding: 15,
     borderColor: "tomato",
     margin: 10
   }

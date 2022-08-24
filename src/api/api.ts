@@ -10,3 +10,7 @@ export async function getMovieFromApi(text: string) {
     }
   })
 }
+
+export function getMovieUrl(posterPath: string) {
+  return `https://image.tmdb.org/t/p/w300/${posterPath}`
+}
